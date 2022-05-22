@@ -1,4 +1,6 @@
-﻿namespace GozCommunicator.Core
+﻿using System.Text.RegularExpressions;
+
+namespace GozCommunicator.Core
 {
     internal class Contract
     {
@@ -45,9 +47,18 @@
             }
             set
             {
-                accountNumberAvionika = value.Substring(0, 20);
+                Match math = Regex.Match(value, @"(\A\d{20})");
+                if(math.Groups[1].Value == string.Empty)
+                {
+                    accountNumberAvionika = value;
+                }
+                else
+                { 
+                    accountNumberAvionika = math.Groups[1].Value;
+                }
             }
         }
+
         public string Remark { get; set; }
     }
 }

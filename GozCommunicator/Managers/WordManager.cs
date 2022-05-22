@@ -51,7 +51,6 @@ namespace GozCommunicator.Managers
                 {
                     Program.AbortApp(ex.Message);
                 }
-                
             }
             return new Table();
         }
@@ -73,8 +72,11 @@ namespace GozCommunicator.Managers
                         NumberGosContract = row.Descendants<TableCell>().ElementAt(3).InnerText,
                         Igk = row.Descendants<TableCell>().ElementAt(4).InnerText,
                         CustomersСurrentAccountNumber = row.Descendants<TableCell>().ElementAt(5).InnerText,
-                        AccountNumberAvionika = row.Descendants<TableCell>().ElementAt(6).InnerText,
                     };
+                    foreach (var lines in row.Descendants<TableCell>().ElementAt(6).Descendants<Paragraph>())
+                    {
+                        contract.AccountNumberAvionika += lines.InnerText + "\n";
+                    }
                     foreach (var lines in row.Descendants<TableCell>().ElementAt(7).Descendants<Paragraph>())
                     {
                         contract.Remark += lines.InnerText + "\n";
