@@ -48,17 +48,22 @@ namespace GozCommunicator.Core
             set
             {
                 Match math = Regex.Match(value, @"(\A\d{20})");
-                if(math.Groups[1].Value == string.Empty)
+                if (math.Groups[1].Value == string.Empty)
                 {
                     accountNumberAvionika = value;
                 }
                 else
-                { 
+                {
                     accountNumberAvionika = math.Groups[1].Value;
                 }
             }
         }
 
         public string Remark { get; set; }
+
+        public void AddingAccountNumberAvionika(string text)
+        {
+            accountNumberAvionika += text;
+        }
     }
 }

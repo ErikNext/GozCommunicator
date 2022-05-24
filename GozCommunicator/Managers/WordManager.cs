@@ -55,6 +55,18 @@ namespace GozCommunicator.Managers
             return new Table();
         }
 
+        public Contract GetContractAnIgkOrNull(List<Contract> contracts, Contract searchedContract)
+        {
+            foreach(var contract in contracts)
+            {
+                if(contract.Igk == searchedContract.Igk)
+                {
+                    return contract;
+                }
+            }
+            return null;
+        }
+
         public List<Contract> TableParserToContracts(Table node)
         {
             Contract contract;
@@ -81,7 +93,18 @@ namespace GozCommunicator.Managers
                     {
                         contract.Remark += lines.InnerText + "\n";
                     }
-                    contracts.Add(contract);
+
+                    var foundContract = GetContractAnIgkOrNull(contracts, contract);
+
+                    if (foundContract == null)
+                        contracts.Add(contract);
+                    else
+                    {
+                        foundContract.Theme += "\n" + contract.Theme;
+                        foundContract.CustomersСurrentAccountNumber += "\n" + contract.CustomersСurrentAccountNumber;
+                        foundContract.AddingAccountNumberAvionika("\n" + contract.AccountNumberAvionika);
+                        foundContract.Remark += "\n" + contract.Remark;
+                    }
                 }
                 else if (row.Descendants<TableCell>().ElementAt(0).InnerText == "")
                 {

@@ -91,7 +91,6 @@ namespace GozCommunicator.Managers
                     ObjWorkSheet.Cells[j, ColumnsExcel[2]] = contract.Igk;
                     ObjWorkSheet.Cells[j, ColumnsExcel[3]] = contract.Igk;
                     ObjWorkSheet.Cells[j, ColumnsExcel[4]] = contract.AccountNumberAvionika;
-                    ObjWorkSheet.Cells[j, ColumnsExcel[4]].NumberFormat = "#####################";
                     ObjWorkSheet.Cells[j, ColumnsExcel[4]].HorizontalAlignment = Constants.xlLeft;
                     ObjWorkSheet.Cells[j, ColumnsExcel[9]] = contract.Remark;
 
@@ -105,7 +104,6 @@ namespace GozCommunicator.Managers
             ObjWorkSheet.Cells[cell.Row, ColumnsExcel[2]] = contract.Igk;
             ObjWorkSheet.Cells[cell.Row, ColumnsExcel[3]] = contract.Igk;
             ObjWorkSheet.Cells[cell.Row, ColumnsExcel[4]] = contract.AccountNumberAvionika;
-            ObjWorkSheet.Cells[cell.Row, ColumnsExcel[4]].NumberFormat = "#####################";
             ObjWorkSheet.Cells[cell.Row, ColumnsExcel[4]].HorizontalAlignment = Constants.xlLeft;
             ObjWorkSheet.Cells[cell.Row, ColumnsExcel[9]] = contract.Remark;
         }
