@@ -1,6 +1,6 @@
-﻿using GozCommunicator.Core;
-using GozCommunicator.Managers;
+﻿using GozCommunicator.Managers;
 using System;
+using System.Data;
 
 namespace GozCommunicator
 {
@@ -14,16 +14,11 @@ namespace GozCommunicator
             var tableFromWord = wordManager.GetTableFromWord();
             var contracts = wordManager.TableParserToContracts(tableFromWord);
 
-            excelManager.ContractToExcel(contracts);
-
-            Console.WriteLine("\nИзменения успешно применены!\n");
-
-            foreach(var line in Statistic.CreatedLines)
-            {
-                Console.WriteLine($"На строке {line.Row} была создана новая запись!");
-            }
+            var table = excelManager.ReadExcelFile("Лист1");
+            excelManager.CheckTable(table, contracts);
 
             Console.ReadLine();
+            //excelManager.ContractToExcel(contracts);
         }
 
         public static void AbortApp(string message)

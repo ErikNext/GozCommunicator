@@ -2,29 +2,19 @@
 using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
 using System.IO;
 
 namespace GozCommunicator.Managers
 {
-    public class CellExcel
-    {
-        public string Column { get; set; }
-        public int Row { get; set; }
-
-        public CellExcel(string column, int row)
-        {
-            Column = column;
-            Row = row;
-        }
-    }
-
     internal class ExcelManager
     {
         public static Dictionary<int, string> ColumnsExcel = new Dictionary<int, string>();
 
         private string PathFile { get; }
 
-        static ExcelManager()
+        public ExcelManager()
         {
             ColumnsExcel.Add(1, "A");
             ColumnsExcel.Add(2, "B");
@@ -53,14 +43,15 @@ namespace GozCommunicator.Managers
 
         private static CellExcel GetCellSystemOrNull(Contract contract, Worksheet ObjWorkSheet)
         {
+
             for (int j = 6; j < int.MaxValue; j++)
             {
                 Range range = ObjWorkSheet.get_Range($"{ColumnsExcel[2]}{j}");
                 if (range.Text == string.Empty)
                     break;
 
-                var igkFromContract = contract.Igk.Substring(contract.Igk.Length - 1);
-                var igkFromExcel = Convert.ToString(range.Text);
+                string igkFromContract = contract.Igk.Substring(contract.Igk.Length - 1);
+                string igkFromExcel = Convert.ToString(range.Text);
                 igkFromExcel = igkFromExcel.Substring(igkFromExcel.Length - 1);
 
 
@@ -81,8 +72,6 @@ namespace GozCommunicator.Managers
 
                 if (range.Text == string.Empty)
                 {
-                    Statistic.CreatedLines.Add(new CellExcel(ColumnsExcel[1], j));
-
                     Range lastNonEmptyCell = ObjWorkSheet.get_Range($"{ColumnsExcel[1]}{j - 1}");
                     var numberSystemString = lastNonEmptyCell.Text.Substring(lastNonEmptyCell.Text.Length - 1);
                     int.TryParse(numberSystemString, out int numberSystemInt);
@@ -131,6 +120,42 @@ namespace GozCommunicator.Managers
                 }
                 ObjWorkBook.Save();
                 ObjExcel.Quit();
+            }
+        }
+
+        public void CheckTable(System.Data.DataTable table, List<Contract> contracts)
+        {
+            foreach (DataRow dataRow in table.Rows)
+            {
+                foreach (var item in dataRow.ItemArray)
+                {
+                    Console.WriteLine(item);
+                }
+                break;
+            }
+        }
+
+        public System.Data.DataTable ReadExcelFile(string sheetName)
+        {
+            using (OleDbConnection conn = new OleDbConnection())
+            {
+                System.Data.DataTable dt = new System.Data.DataTable();
+                string fileExtension = Path.GetExtension(PathFile);
+                if (fileExtension == ".xls")
+                    conn.ConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + PathFile + ";" + "Extended Properties='Excel 8.0;HDR=YES;'";
+                if (fileExtension == ".xlsx")
+                    conn.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + PathFile + ";" + "Extended Properties='Excel 12.0 Xml;HDR=YES;'";
+                using (OleDbCommand comm = new OleDbCommand())
+                {
+                    comm.CommandText = "Select * from [" + sheetName + "$]";
+                    comm.Connection = conn;
+                    using (OleDbDataAdapter da = new OleDbDataAdapter())
+                    {
+                        da.SelectCommand = comm;
+                        da.Fill(dt);
+                        return dt;
+                    }
+                }
             }
         }
     }

@@ -30,7 +30,7 @@ namespace GozCommunicator.Core
                 else
                 {
                     var igkNumber = value.Substring(value.Length - 1);
-                    igk = $"ИГК № {igkNumber}";
+                    igk = $"ИГК № {igkNumber}";//первое вхождение числа из N цифр
                 }
             }
         }
